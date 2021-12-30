@@ -5,7 +5,7 @@ const axios = require('axios');
 const {response} = require("express");
 const e = require("express");
 
-const port = 8080;
+const port = 80;
 const baseURL = "https://api.livecoinwatch.com";
 
 app.listen(port, () => {
