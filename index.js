@@ -53,3 +53,45 @@ app.get('/coin', function(req, res) {
         res.end("0.0");
     })
 });
+
+app.get('/coinpastvalue', function(req, res) {
+    let parameters = req.query;
+    let endPoint = "/coins/single/history";
+    let fullUrl = baseURL + endPoint;
+
+    let body = {
+        currency : parameters.currency,
+        code: parameters.code,
+        start: parameters.start,
+        end: parameters.end,
+        meta: parameters.meta
+    }
+    if(!body.end){
+        body.end = body.start;
+    }
+    let  _headers = {'x-api-key': parameters.key}
+
+    axios.post(fullUrl,body,{headers:_headers}).then((response) => {
+        if(response.status == 200){
+            let data = response.data;
+            let info;
+            let history = data.history;
+            if(parameters.fullData == "true"){
+                res.type("text");
+                info = JSON.stringify(history);
+            }else{
+                res.type("text");
+                info = history[history.length - 1].rate.toString();
+            }
+
+            res.writeHead(200);
+            res.end(info);
+        }
+    })
+    .catch((error) => {
+        console.log(error);
+        res.type("text");
+        res.writeHead(200);
+        res.end("0.0");
+    })
+});
